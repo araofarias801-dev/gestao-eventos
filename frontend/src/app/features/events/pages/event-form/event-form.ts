@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
 import { EventService } from '../../../../core/services/event';
 
 @Component({
@@ -26,6 +27,7 @@ import { EventService } from '../../../../core/services/event';
     MatSnackBarModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatIconModule,
   ],
   templateUrl: './event-form.html',
   styleUrl: './event-form.scss',

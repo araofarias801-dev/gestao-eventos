@@ -1,9 +1,11 @@
-<mat-card class="container">
-  <mat-card-header>
-    <mat-card-title>{{ isEdit ? 'Editar Evento' : 'Novo Evento' }}</mat-card-title>
-  </mat-card-header>
+<div class="page-wrapper">
+<mat-card class="form-card">
 
-  <mat-card-content>
+  <div class="form-header">
+    <mat-icon>{{ isEdit ? 'edit' : 'add_circle' }}</mat-icon>
+    <h2>{{ isEdit ? 'Editar Evento' : 'Novo Evento' }}</h2>
+  </div>
+
     <div *ngIf="loading" class="spinner-container">
       <mat-spinner diameter="40"></mat-spinner>
     </div>
@@ -44,5 +46,6 @@
         </button>
       </div>
     </form>
-  </mat-card-content>
+
 </mat-card>
+</div>

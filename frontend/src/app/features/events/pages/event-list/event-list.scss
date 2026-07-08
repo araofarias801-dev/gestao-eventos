@@ -91,6 +91,16 @@
   color: #1976d2;
 }
 
+.description-text {
+  color: #666;
+  font-size: 13px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 300px;
+}
+
 .date-cell,
 .location-cell {
   display: flex;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
@@ -30,33 +30,30 @@ import { Event } from '../../../../core/models/event.model';
   styleUrl: './event-list.scss',
 })
 export class EventList implements OnInit {
-  events: Event[] = [];
-  totalElements = 0;
+  events = signal<Event[]>([]);
+  totalElements = signal(0);
   pageSize = 10;
   currentPage = 0;
-  loading = false;
-  displayedColumns = ['title', 'eventDate', 'location', 'actions'];
+  loading = signal(false);
+  displayedColumns = ['title', 'description', 'eventDate', 'location', 'actions'];
 
-  constructor(private eventService: EventService, private router: Router, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef) {}
+  constructor(private eventService: EventService, private router: Router, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.loadEvents();
   }
 
   loadEvents(): void {
-    this.loading = true;
-    this.cdr.detectChanges();
+    this.loading.set(true);
     this.eventService.findAll(this.currentPage, this.pageSize).subscribe({
       next: (page) => {
-        this.events = page.content;
-        this.totalElements = page.totalElements;
-        this.loading = false;
-        this.cdr.detectChanges();
+        this.events.set(page.content);
+        this.totalElements.set(page.totalElements);
+        this.loading.set(false);
       },
       error: () => {
         this.snackBar.open('Erro ao carregar eventos', 'Fechar', { duration: 3000 });
-        this.loading = false;
-        this.cdr.detectChanges();
+        this.loading.set(false);
       }
     });
   }
