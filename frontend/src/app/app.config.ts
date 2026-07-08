@@ -5,6 +5,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { getPtBrPaginatorIntl } from './core/providers/paginator-ptbr';
 
 import { routes } from './app.routes';
 
@@ -18,5 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    { provide: MatPaginatorIntl, useFactory: getPtBrPaginatorIntl },
   ]
 };

@@ -1,8 +1,8 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -30,6 +30,8 @@ import { Event } from '../../../../core/models/event.model';
   styleUrl: './event-list.scss',
 })
 export class EventList implements OnInit {
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   events = signal<Event[]>([]);
   totalElements = signal(0);
   pageSize = 10;
@@ -59,8 +61,8 @@ export class EventList implements OnInit {
   }
 
   onPageChange(event: PageEvent): void {
-    this.currentPage = event.pageIndex;
     this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
     this.loadEvents();
   }
 
