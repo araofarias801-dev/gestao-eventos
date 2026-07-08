@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -24,8 +24,8 @@ import { Event } from '../../../../core/models/event.model';
   styleUrl: './event-detail.scss',
 })
 export class EventDetail implements OnInit {
-  event?: Event;
-  loading = false;
+  event = signal<Event | null>(null);
+  loading = signal(false);
 
   constructor(
     private eventService: EventService,
@@ -36,11 +36,11 @@ export class EventDetail implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.params['id'];
-    this.loading = true;
+    this.loading.set(true);
     this.eventService.findById(id).subscribe({
       next: (event) => {
-        this.event = event;
-        this.loading = false;
+        this.event.set(event);
+        this.loading.set(false);
       },
       error: () => {
         this.snackBar.open('Evento não encontrado', 'Fechar', { duration: 3000 });
@@ -50,7 +50,7 @@ export class EventDetail implements OnInit {
   }
 
   editar(): void {
-    this.router.navigate(['/events', this.event!.id, 'edit']);
+    this.router.navigate(['/events', this.event()!.id, 'edit']);
   }
 
   voltar(): void {

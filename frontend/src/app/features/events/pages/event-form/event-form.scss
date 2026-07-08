@@ -44,6 +44,15 @@ form {
   width: 100%;
 }
 
+.date-time-row {
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  gap: 16px;
+}
+
+.date-field { width: 100%; }
+.time-field { width: 100%; }
+
 .actions {
   display: flex;
   justify-content: flex-end;

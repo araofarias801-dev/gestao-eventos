@@ -52,6 +52,7 @@ export class EventForm implements OnInit {
       title: ['', [Validators.required, Validators.maxLength(100)]],
       description: ['', [Validators.required, Validators.maxLength(1000)]],
       eventDate: ['', Validators.required],
+      eventTime: ['', [Validators.required, Validators.pattern(/^([01]\d|2[0-3]):[0-5]\d$/)]],
       location: ['', [Validators.required, Validators.maxLength(200)]],
     });
 
@@ -61,9 +62,13 @@ export class EventForm implements OnInit {
       this.loading = true;
       this.eventService.findById(this.eventId).subscribe({
         next: (event) => {
+          const date = new Date(event.eventDate);
+          const hh = String(date.getHours()).padStart(2, '0');
+          const mm = String(date.getMinutes()).padStart(2, '0');
           this.form.patchValue({
             ...event,
-            eventDate: new Date(event.eventDate),
+            eventDate: date,
+            eventTime: `${hh}:${mm}`,
           });
           this.loading = false;
         },
@@ -78,7 +83,13 @@ export class EventForm implements OnInit {
   salvar(): void {
     if (this.form.invalid) return;
     this.saving = true;
-    const value = { ...this.form.value, eventDate: new Date(this.form.value.eventDate).toISOString() };
+    const { eventTime, eventDate, ...rest } = this.form.value;
+    const date = new Date(eventDate);
+    const yyyy = date.getFullYear();
+    const MM = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const isoString = `${yyyy}-${MM}-${dd}T${eventTime}:00`;
+    const value = { ...rest, eventDate: isoString };
 
     const request = this.isEdit
       ? this.eventService.update(this.eventId!, value)

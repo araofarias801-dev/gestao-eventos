@@ -24,13 +24,23 @@
         <mat-error *ngIf="form.get('description')?.hasError('required')">Descrição é obrigatória</mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Data e Hora</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="eventDate" />
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-        <mat-error *ngIf="form.get('eventDate')?.hasError('required')">Data é obrigatória</mat-error>
-      </mat-form-field>
+      <div class="date-time-row">
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>Data</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="eventDate" />
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="form.get('eventDate')?.hasError('required')">Data é obrigatória</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="time-field">
+          <mat-label>Hora</mat-label>
+          <input matInput formControlName="eventTime" placeholder="HH:mm" maxlength="5" />
+          <mat-icon matSuffix>schedule</mat-icon>
+          <mat-error *ngIf="form.get('eventTime')?.hasError('required')">Hora é obrigatória</mat-error>
+          <mat-error *ngIf="form.get('eventTime')?.hasError('pattern')">Formato: HH:mm</mat-error>
+        </mat-form-field>
+      </div>
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Local</mat-label>

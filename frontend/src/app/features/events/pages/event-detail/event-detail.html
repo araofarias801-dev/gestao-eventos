@@ -1,28 +1,50 @@
-<div class="container">
-  <div *ngIf="loading" class="spinner-container">
-    <mat-spinner diameter="40"></mat-spinner>
+<div class="page-wrapper">
+  <div *ngIf="loading()" class="spinner-container">
+    <mat-spinner diameter="48"></mat-spinner>
   </div>
 
-  <mat-card *ngIf="event && !loading">
-    <mat-card-header>
-      <mat-card-title>{{ event.title }}</mat-card-title>
-      <mat-card-subtitle>{{ event.eventDate | date:'dd/MM/yyyy HH:mm' }}</mat-card-subtitle>
-    </mat-card-header>
-
-    <mat-card-content>
-      <p><strong>Descrição:</strong> {{ event.description }}</p>
-      <p><strong>Local:</strong> {{ event.location }}</p>
-      <p><strong>Criado em:</strong> {{ event.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
-      <p><strong>Atualizado em:</strong> {{ event.updatedAt | date:'dd/MM/yyyy HH:mm' }}</p>
-    </mat-card-content>
-
-    <mat-card-actions>
+  <ng-container *ngIf="event() && !loading()">
+    <div class="page-header">
       <button mat-button (click)="voltar()">
         <mat-icon>arrow_back</mat-icon> Voltar
       </button>
       <button mat-raised-button color="accent" (click)="editar()">
         <mat-icon>edit</mat-icon> Editar
       </button>
-    </mat-card-actions>
-  </mat-card>
+    </div>
+
+    <mat-card class="detail-card">
+      <mat-card-header>
+        <mat-card-title>{{ event()!.title }}</mat-card-title>
+        <mat-card-subtitle>
+          <mat-icon style="font-size:14px;vertical-align:middle">calendar_today</mat-icon>
+          {{ event()!.eventDate | date:'dd/MM/yyyy HH:mm' }}
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content class="detail-content">
+        <div class="detail-item">
+          <span class="detail-label">Descrição</span>
+          <span class="detail-value">{{ event()!.description }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Local</span>
+          <span class="detail-value">
+            <mat-icon style="font-size:16px;vertical-align:middle;color:#9e9e9e">place</mat-icon>
+            {{ event()!.location }}
+          </span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-item">
+            <span class="detail-label">Criado em</span>
+            <span class="detail-value">{{ event()!.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Atualizado em</span>
+            <span class="detail-value">{{ event()!.updatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
 </div>
