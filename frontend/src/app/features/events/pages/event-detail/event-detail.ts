@@ -1,9 +1,59 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { EventService } from '../../../../core/services/event';
+import { Event } from '../../../../core/models/event.model';
 
 @Component({
   selector: 'app-event-detail',
-  imports: [],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+  ],
   templateUrl: './event-detail.html',
   styleUrl: './event-detail.scss',
 })
-export class EventDetail {}
+export class EventDetail implements OnInit {
+  event?: Event;
+  loading = false;
+
+  constructor(
+    private eventService: EventService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {}
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.params['id'];
+    this.loading = true;
+    this.eventService.findById(id).subscribe({
+      next: (event) => {
+        this.event = event;
+        this.loading = false;
+      },
+      error: () => {
+        this.snackBar.open('Evento não encontrado', 'Fechar', { duration: 3000 });
+        this.router.navigate(['/events']);
+      }
+    });
+  }
+
+  editar(): void {
+    this.router.navigate(['/events', this.event!.id, 'edit']);
+  }
+
+  voltar(): void {
+    this.router.navigate(['/events']);
+  }
+}
