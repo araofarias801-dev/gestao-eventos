@@ -6,11 +6,11 @@
     <h2>{{ isEdit ? 'Editar Evento' : 'Novo Evento' }}</h2>
   </div>
 
-    <div *ngIf="loading" class="spinner-container">
+    <div *ngIf="loading()" class="spinner-container">
       <mat-spinner diameter="40"></mat-spinner>
     </div>
 
-    <form [formGroup]="form" (ngSubmit)="salvar()" *ngIf="!loading">
+    <form [formGroup]="form" (ngSubmit)="salvar()" *ngIf="!loading()">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Título</mat-label>
         <input matInput formControlName="title" maxlength="100" />
@@ -50,9 +50,9 @@
 
       <div class="actions">
         <button mat-button type="button" (click)="cancelar()">Cancelar</button>
-        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || saving">
-          <mat-spinner diameter="20" *ngIf="saving"></mat-spinner>
-          {{ saving ? 'Salvando...' : 'Salvar' }}
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || saving()">
+          <mat-spinner diameter="20" *ngIf="saving()"></mat-spinner>
+          {{ saving() ? 'Salvando...' : 'Salvar' }}
         </button>
       </div>
     </form>

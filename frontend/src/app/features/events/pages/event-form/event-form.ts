@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -34,8 +34,8 @@ import { EventService } from '../../../../core/services/event';
 })
 export class EventForm implements OnInit {
   form!: FormGroup;
-  loading = false;
-  saving = false;
+  loading = signal(false);
+  saving = signal(false);
   isEdit = false;
   eventId?: number;
 
@@ -59,7 +59,7 @@ export class EventForm implements OnInit {
     this.eventId = this.route.snapshot.params['id'];
     if (this.eventId) {
       this.isEdit = true;
-      this.loading = true;
+      this.loading.set(true);
       this.eventService.findById(this.eventId).subscribe({
         next: (event) => {
           const date = new Date(event.eventDate);
@@ -70,11 +70,11 @@ export class EventForm implements OnInit {
             eventDate: date,
             eventTime: `${hh}:${mm}`,
           });
-          this.loading = false;
+          this.loading.set(false);
         },
         error: () => {
           this.snackBar.open('Erro ao carregar evento', 'Fechar', { duration: 3000 });
-          this.loading = false;
+          this.loading.set(false);
         }
       });
     }
@@ -82,7 +82,7 @@ export class EventForm implements OnInit {
 
   salvar(): void {
     if (this.form.invalid) return;
-    this.saving = true;
+    this.saving.set(true);
     const { eventTime, eventDate, ...rest } = this.form.value;
     const date = new Date(eventDate);
     const yyyy = date.getFullYear();
@@ -105,7 +105,7 @@ export class EventForm implements OnInit {
       },
       error: () => {
         this.snackBar.open('Erro ao salvar evento', 'Fechar', { duration: 3000 });
-        this.saving = false;
+        this.saving.set(false);
       }
     });
   }
