@@ -37,3 +37,39 @@ body {
   height: 100%;
 }
 /* You can add global styles to this file, and also import other style files */
+
+.snack-success .mdc-snackbar__surface {
+  background-color: #2e7d32 !important;
+
+  .mdc-snackbar__label {
+    color: #fff !important;
+  }
+
+  .mat-mdc-button {
+    color: #a5d6a7 !important;
+  }
+}
+
+.snack-error .mdc-snackbar__surface {
+  background-color: #c62828 !important;
+
+  .mdc-snackbar__label {
+    color: #fff !important;
+  }
+
+  .mat-mdc-button {
+    color: #ef9a9a !important;
+  }
+}
+
+.snack-warning .mdc-snackbar__surface {
+  background-color: #e65100 !important;
+
+  .mdc-snackbar__label {
+    color: #fff !important;
+  }
+
+  .mat-mdc-button {
+    color: #ffcc80 !important;
+  }
+}

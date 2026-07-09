@@ -72,11 +72,11 @@
 }
 
 .table-row {
+  cursor: default;
   transition: background-color 0.15s ease;
 
   &:hover {
     background-color: #f0f4ff;
-    cursor: pointer;
   }
 }
 

@@ -7,7 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { NotificationService } from '../../../../core/services/notification';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -44,7 +45,7 @@ export class EventForm implements OnInit {
     private eventService: EventService,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private notification: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +74,7 @@ export class EventForm implements OnInit {
           this.loading.set(false);
         },
         error: () => {
-          this.snackBar.open('Erro ao carregar evento', 'Fechar', { duration: 3000 });
+          this.notification.error('Erro ao carregar evento');
           this.loading.set(false);
         }
       });
@@ -97,14 +98,11 @@ export class EventForm implements OnInit {
 
     request.subscribe({
       next: () => {
-        this.snackBar.open(
-          this.isEdit ? 'Evento atualizado!' : 'Evento criado!',
-          'Fechar', { duration: 3000 }
-        );
+        this.notification.success(this.isEdit ? 'Evento atualizado!' : 'Evento criado!');
         this.router.navigate(['/events']);
       },
       error: () => {
-        this.snackBar.open('Erro ao salvar evento', 'Fechar', { duration: 3000 });
+        this.notification.error('Erro ao salvar evento');
         this.saving.set(false);
       }
     });

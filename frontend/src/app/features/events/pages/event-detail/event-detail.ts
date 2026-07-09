@@ -5,7 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { NotificationService } from '../../../../core/services/notification';
 import { EventService } from '../../../../core/services/event';
 import { Event } from '../../../../core/models/event.model';
 
@@ -31,7 +32,7 @@ export class EventDetail implements OnInit {
     private eventService: EventService,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar
+    private notification: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -43,7 +44,7 @@ export class EventDetail implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.snackBar.open('Evento não encontrado', 'Fechar', { duration: 3000 });
+        this.notification.error('Evento não encontrado');
         this.router.navigate(['/events']);
       }
     });

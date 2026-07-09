@@ -6,7 +6,10 @@ import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/p
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { NotificationService } from '../../../../core/services/notification';
+import { ConfirmDialog } from '../../../../shared/confirm-dialog/confirm-dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EventService } from '../../../../core/services/event';
@@ -25,6 +28,7 @@ import { Event } from '../../../../core/models/event.model';
     MatSnackBarModule,
     MatCardModule,
     MatTooltipModule,
+    MatDialogModule,
   ],
   templateUrl: './event-list.html',
   styleUrl: './event-list.scss',
@@ -39,7 +43,12 @@ export class EventList implements OnInit {
   loading = signal(false);
   displayedColumns = ['title', 'description', 'eventDate', 'location', 'actions'];
 
-  constructor(private eventService: EventService, private router: Router, private snackBar: MatSnackBar) {}
+  constructor(
+    private eventService: EventService,
+    private router: Router,
+    private notification: NotificationService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.loadEvents();
@@ -54,7 +63,7 @@ export class EventList implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.snackBar.open('Erro ao carregar eventos', 'Fechar', { duration: 3000 });
+        this.notification.error('Erro ao carregar eventos');
         this.loading.set(false);
       }
     });
@@ -79,16 +88,21 @@ export class EventList implements OnInit {
   }
 
   excluir(id: number): void {
-    if (confirm('Deseja realmente excluir este evento?')) {
+    const ref = this.dialog.open(ConfirmDialog, {
+      width: '380px',
+      data: { title: 'Excluir Evento', message: 'Deseja realmente excluir este evento? Esta ação não pode ser desfeita.' },
+    });
+    ref.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) return;
       this.eventService.delete(id).subscribe({
         next: () => {
-          this.snackBar.open('Evento excluído com sucesso', 'Fechar', { duration: 3000 });
+          this.notification.success('Evento excluído com sucesso!');
           this.loadEvents();
         },
         error: () => {
-          this.snackBar.open('Erro ao excluir evento', 'Fechar', { duration: 3000 });
+          this.notification.error('Erro ao excluir evento');
         }
       });
-    }
+    });
   }
 }
