@@ -82,7 +82,10 @@ export class EventForm implements OnInit {
   }
 
   salvar(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
     this.saving.set(true);
     const { eventTime, eventDate, ...rest } = this.form.value;
     const date = new Date(eventDate);
