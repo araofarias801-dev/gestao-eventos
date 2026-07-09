@@ -1,0 +1,68 @@
+<div class="page-wrapper">
+
+  <nav class="breadcrumb">
+    <a (click)="cancelar()" class="breadcrumb-link">Eventos</a>
+    <mat-icon class="breadcrumb-sep">chevron_right</mat-icon>
+    <span class="breadcrumb-current">{{ isEdit ? 'Editar Evento' : 'Novo Evento' }}</span>
+  </nav>
+
+<mat-card class="form-card">
+
+  <div class="form-header">
+    <mat-icon>{{ isEdit ? 'edit' : 'add_circle' }}</mat-icon>
+    <h2>{{ isEdit ? 'Editar Evento' : 'Novo Evento' }}</h2>
+  </div>
+
+    <div *ngIf="loading()" class="spinner-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="salvar()" *ngIf="!loading()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Título</mat-label>
+        <input matInput formControlName="title" maxlength="100" />
+        <mat-error *ngIf="form.get('title')?.hasError('required')">Título é obrigatório</mat-error>
+        <mat-error *ngIf="form.get('title')?.hasError('maxlength')">Máximo 100 caracteres</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Descrição</mat-label>
+        <textarea matInput formControlName="description" rows="4" maxlength="1000"></textarea>
+        <mat-error *ngIf="form.get('description')?.hasError('required')">Descrição é obrigatória</mat-error>
+      </mat-form-field>
+
+      <div class="date-time-row">
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>Data</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="eventDate" />
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="form.get('eventDate')?.hasError('required')">Data é obrigatória</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="time-field">
+          <mat-label>Hora</mat-label>
+          <input matInput formControlName="eventTime" placeholder="HH:mm" maxlength="5" />
+          <mat-icon matSuffix>schedule</mat-icon>
+          <mat-error *ngIf="form.get('eventTime')?.hasError('required')">Hora é obrigatória</mat-error>
+          <mat-error *ngIf="form.get('eventTime')?.hasError('pattern')">Formato: HH:mm</mat-error>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Local</mat-label>
+        <input matInput formControlName="location" maxlength="200" />
+        <mat-error *ngIf="form.get('location')?.hasError('required')">Local é obrigatório</mat-error>
+      </mat-form-field>
+
+      <div class="actions">
+        <button mat-button type="button" (click)="cancelar()">Cancelar</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="saving()">
+          <mat-spinner diameter="20" *ngIf="saving()"></mat-spinner>
+          {{ saving() ? 'Salvando...' : 'Salvar' }}
+        </button>
+      </div>
+    </form>
+
+</mat-card>
+</div>

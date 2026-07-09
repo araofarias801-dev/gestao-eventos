@@ -26,3 +26,13 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+
+# Logging
+logging:
+  level:
+    root: ${LOGGING_LEVEL:INFO}
+    br.com.comuniva: DEBUG
+    org.springframework.security: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

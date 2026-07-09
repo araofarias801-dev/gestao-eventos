@@ -1,0 +1,56 @@
+<div class="page-wrapper">
+  <nav class="breadcrumb">
+    <a (click)="voltar()" class="breadcrumb-link">Eventos</a>
+    <mat-icon class="breadcrumb-sep">chevron_right</mat-icon>
+    <span class="breadcrumb-current">{{ event() ? event()!.title : 'Detalhes' }}</span>
+  </nav>
+
+  <div *ngIf="loading()" class="spinner-container">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="event() && !loading()">
+    <div class="page-header">
+      <button mat-button (click)="voltar()">
+        <mat-icon>arrow_back</mat-icon> Voltar
+      </button>
+      <button mat-raised-button color="accent" (click)="editar()">
+        <mat-icon>edit</mat-icon> Editar
+      </button>
+    </div>
+
+    <mat-card class="detail-card">
+      <mat-card-header>
+        <mat-card-title>{{ event()!.title }}</mat-card-title>
+        <mat-card-subtitle>
+          <mat-icon style="font-size:14px;vertical-align:middle">calendar_today</mat-icon>
+          {{ event()!.eventDate | date:'dd/MM/yyyy HH:mm' }}
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content class="detail-content">
+        <div class="detail-item">
+          <span class="detail-label">Descrição</span>
+          <span class="detail-value">{{ event()!.description }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Local</span>
+          <span class="detail-value">
+            <mat-icon style="font-size:16px;vertical-align:middle;color:#9e9e9e">place</mat-icon>
+            {{ event()!.location }}
+          </span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-item">
+            <span class="detail-label">Criado em</span>
+            <span class="detail-value">{{ event()!.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Atualizado em</span>
+            <span class="detail-value">{{ event()!.updatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+</div>
