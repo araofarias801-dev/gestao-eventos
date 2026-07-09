@@ -13,6 +13,41 @@
     </button>
   </div>
 
+  <mat-card class="filter-card">
+    <form [formGroup]="filterForm" class="filter-form">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Título</mat-label>
+        <input matInput formControlName="title" placeholder="Buscar por título..." />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Local</mat-label>
+        <input matInput formControlName="location" placeholder="Buscar por local..." />
+        <mat-icon matSuffix>place</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field filter-field--date">
+        <mat-label>Data de</mat-label>
+        <input matInput [matDatepicker]="pickerFrom" formControlName="dateFrom" />
+        <mat-datepicker-toggle matIconSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+        <mat-datepicker #pickerFrom></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field filter-field--date">
+        <mat-label>Data até</mat-label>
+        <input matInput [matDatepicker]="pickerTo" formControlName="dateTo" />
+        <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
+        <mat-datepicker #pickerTo></mat-datepicker>
+      </mat-form-field>
+
+      <button mat-stroked-button type="button" (click)="clearFilters()" class="btn-clear">
+        <mat-icon>clear</mat-icon>
+        Limpar
+      </button>
+    </form>
+  </mat-card>
+
   <mat-card class="table-card">
     <div *ngIf="loading()" class="spinner-container">
       <mat-spinner diameter="48"></mat-spinner>

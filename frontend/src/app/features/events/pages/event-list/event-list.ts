@@ -1,6 +1,8 @@
-import { Component, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +14,10 @@ import { NotificationService } from '../../../../core/services/notification';
 import { ConfirmDialog } from '../../../../shared/confirm-dialog/confirm-dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { EventService } from '../../../../core/services/event';
 import { Event } from '../../../../core/models/event.model';
 
@@ -29,11 +35,16 @@ import { Event } from '../../../../core/models/event.model';
     MatCardModule,
     MatTooltipModule,
     MatDialogModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './event-list.html',
   styleUrl: './event-list.scss',
 })
-export class EventList implements OnInit {
+export class EventList implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   events = signal<Event[]>([]);
@@ -42,8 +53,11 @@ export class EventList implements OnInit {
   currentPage = 0;
   loading = signal(false);
   displayedColumns = ['title', 'description', 'eventDate', 'location', 'actions'];
+  filterForm!: FormGroup;
+  private destroy$ = new Subject<void>();
 
   constructor(
+    private fb: FormBuilder,
     private eventService: EventService,
     private router: Router,
     private notification: NotificationService,
@@ -51,12 +65,54 @@ export class EventList implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.filterForm = this.fb.group({
+      title: [''],
+      location: [''],
+      dateFrom: [''],
+      dateTo: [''],
+    });
     this.loadEvents();
+    this.filterForm.valueChanges.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.currentPage = 0;
+      if (this.paginator) this.paginator.pageIndex = 0;
+      this.loadEvents();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  clearFilters(): void {
+    this.filterForm.reset();
   }
 
   loadEvents(): void {
     this.loading.set(true);
-    this.eventService.findAll(this.currentPage, this.pageSize).subscribe({
+    const { title, location, dateFrom, dateTo } = this.filterForm?.value ?? {};
+    const filters: Record<string, string> = {};
+    if (title) filters['title'] = title;
+    if (location) filters['location'] = location;
+    if (dateFrom) {
+      const d = new Date(dateFrom);
+      const yyyy = d.getFullYear();
+      const MM = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      filters['dateFrom'] = `${yyyy}-${MM}-${dd}T00:00:00`;
+    }
+    if (dateTo) {
+      const d = new Date(dateTo);
+      const yyyy = d.getFullYear();
+      const MM = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      filters['dateTo'] = `${yyyy}-${MM}-${dd}T23:59:59`;
+    }
+    this.eventService.findAll(this.currentPage, this.pageSize, filters).subscribe({
       next: (page) => {
         this.events.set(page.content);
         this.totalElements.set(page.totalElements);

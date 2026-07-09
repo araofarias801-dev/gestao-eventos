@@ -3,6 +3,7 @@ package com.gestao.eventos.controller;
 import com.gestao.eventos.dto.EventRequestDTO;
 import com.gestao.eventos.dto.EventResponseDTO;
 import com.gestao.eventos.service.EventService;
+import com.gestao.eventos.specification.EventSpec;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -22,9 +23,11 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping
-    @Operation(summary = "Lista todos os eventos com paginação")
-    public ResponseEntity<Page<EventResponseDTO>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(eventService.findAll(pageable));
+    @Operation(summary = "Lista todos os eventos com paginação e filtros")
+    public ResponseEntity<Page<EventResponseDTO>> findAll(
+            EventSpec.EventFilter spec,
+            Pageable pageable) {
+        return ResponseEntity.ok(eventService.findAll(spec, pageable));
     }
 
     @GetMapping("/{id}")

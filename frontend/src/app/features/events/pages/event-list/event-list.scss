@@ -49,6 +49,36 @@
   }
 }
 
+.filter-card {
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  margin-bottom: 16px;
+  padding: 16px !important;
+}
+
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.filter-field {
+  flex: 1;
+  min-width: 180px;
+
+  &--date {
+    min-width: 150px;
+    flex: 0 1 160px;
+  }
+}
+
+.btn-clear {
+  height: 56px;
+  white-space: nowrap;
+  margin-bottom: 22px;
+}
+
 .table-card {
   border-radius: 12px !important;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;

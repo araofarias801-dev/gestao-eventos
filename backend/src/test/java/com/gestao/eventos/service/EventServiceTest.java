@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -108,10 +109,11 @@ class EventServiceTest {
     void deveListarApenasEventosNaoDeletados() {
         PageRequest pageable = PageRequest.of(0, 10);
         Page<Event> page = new PageImpl<>(List.of(event));
-        when(eventRepository.findAllByDeletedFalse(pageable)).thenReturn(page);
+        Specification<Event> spec = Specification.where(null);
+        when(eventRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
         when(eventMapper.toResponseDTO(event)).thenReturn(responseDTO);
 
-        Page<EventResponseDTO> result = eventService.findAll(pageable);
+        Page<EventResponseDTO> result = eventService.findAll(spec, pageable);
 
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getTitle()).isEqualTo("Evento Teste");
