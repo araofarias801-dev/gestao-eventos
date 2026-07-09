@@ -1,4 +1,10 @@
 <div class="page-wrapper">
+  <nav class="breadcrumb">
+    <a (click)="voltar()" class="breadcrumb-link">Eventos</a>
+    <mat-icon class="breadcrumb-sep">chevron_right</mat-icon>
+    <span class="breadcrumb-current">{{ event() ? event()!.title : 'Detalhes' }}</span>
+  </nav>
+
   <div *ngIf="loading()" class="spinner-container">
     <mat-spinner diameter="48"></mat-spinner>
   </div>
